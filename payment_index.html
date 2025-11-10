@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>StyleHub Payment</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body style="font-family:sans-serif;text-align:center;margin-top:80px">
+  <h2>Pay ₹500 using Google Pay / UPI / Card</h2>
+  <button id="payBtn" style="padding:10px 20px;font-size:16px;">Pay Now</button>
+
+  <script>
+    document.getElementById("payBtn").onclick = function(e){
+      var options = {
+        "key": "rzp_test_abc123", // replace with your Key ID
+        "amount": 50000,          // amount in paise (₹500.00)
+        "currency": "INR",
+        "name": "StyleHub Store",
+        "description": "Order #12345",
+        "image": "https://yourdomain/logo.png",
+        "handler": function (response){
+          // send payment id to backend for verification
+          fetch("payment.php", {
+            method: "POST",
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            body: "payment_id=" + response.razorpay_payment_id
+          })
+          .then(res => res.text())
+          .then(data => alert(data));
+        },
+        "theme": {"color": "#3399cc"}
+      };
+      var rzp1 = new Razorpay(options);
+      rzp1.open();
+      e.preventDefault();
+    }
+  </script>
+</body>
+</html>
